@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+
+
+    <form class="form-section" action="">
+        <input name="user-name" class="search-key" type="text">
+        <button class="search-btn">Search</button>
+
+    </form>
+    <span class="err-notification"></span>
+    <div class="list"></div>
+
+
+
+
+
+
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript">
+        const listSection = document.querySelector('.list')
+        const errorTag = document.querySelector('.err-notification')
+        const api = 'https://api.github.com/users'
+        const formSection = document.querySelector('.form-section')
+       
+        formSection.onsubmit = function(event) {
+            event.preventDefault()
+            listSection.innerHTML = ""
+            let searchKey = this['user-name'].value
+            let apiUrl = `${api}/${searchKey}`
+            
+            axios.get(apiUrl)
+                .then(function(response) {
+                let userData = {
+                    name : response.data.name,
+                    avatar: response.data.avatar_url,
+                    email: response.data.email,
+                    companyName : response.data.company,
+                    followers: response.data.followers
+                }
+                let childrenDiv = document.createElement('ul')
+                childrenDiv.innerHTML = `
+                <li>
+                    <h3>Name: ${userData.name}</h3>
+                </li>
+                <li>
+                    <h3>Avatar: <img src="${userData.avatar}"/></h3>
+                </li>
+                <li>
+                    <h3>Email: ${userData.email}</h3>
+                </li>
+                <li>
+                    <h3>Company: ${userData.companyName}</h3>
+                </li>
+                <li>
+                    <h3>Followers: ${userData.followers}</h3>
+                </li>
+                `
+                listSection.append(childrenDiv)
+                })
+                
+                .catch(function(error) {
+                    errorTag.innerHTML = `Không tìm thấy kết quả cho ${searchKey}`
+                })
+        }
+           
+    </script>
+    
+</body>
+</html>
